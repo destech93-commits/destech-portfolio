@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DESTECH | Future-Proof Digital Solutions</title>
     
-    <!-- External Assets -->
-    <script src="https://tailwindcss.com"></script>
-    <script src="https://cloudflare.com"></script>
-    <script src="https://cloudflare.com"></script>
-    
+    <!-- Firebase Engine -->
     <script type="module">
         import { initializeApp } from "https://gstatic.com";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://gstatic.com";
@@ -25,150 +21,138 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        let currentUser = null;
+        let userStatus = null;
 
         window.handleAuth = async (mode) => {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
             try {
-                if (mode === 'signup') { await createUserWithEmailAndPassword(auth, email, pass); alert("Welcome to DESTECH!"); }
-                else { await signInWithEmailAndPassword(auth, email, pass); }
+                if (mode === 'signup') await createUserWithEmailAndPassword(auth, email, pass);
+                else await signInWithEmailAndPassword(auth, email, pass);
                 toggleModal(false);
             } catch (e) { alert(e.message); }
         };
 
-        window.logout = () => signOut(auth);
-
         onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            const authBtn = document.getElementById('auth-nav-btn');
-            authBtn.innerText = user ? "Logout" : "Login";
-            authBtn.onclick = user ? logout : () => toggleModal(true);
+            userStatus = user;
+            document.getElementById('auth-nav-btn').innerText = user ? "LOGOUT" : "LOGIN";
         });
 
-        window.attemptOrder = (gigName) => {
-            if (!currentUser) {
-                alert("Please Login to start your order for " + gigName);
-                toggleModal(true);
-            } else {
-                alert("Order process started for: " + gigName + ". Proceeding to UBA Payment portal...");
-                // Next phase: Project Brief & Payment Integration
-            }
+        window.attemptOrder = (name) => {
+            if (!userStatus) toggleModal(true);
+            else alert("Order Started: " + name);
         };
     </script>
 
     <style>
-        @import url('https://googleapis.com');
-        body { background: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
-        .mesh-gradient {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: radial-gradient(circle at 10% 20%, rgba(46, 2, 73, 0.4) 0%, transparent 40%),
-                        radial-gradient(circle at 90% 80%, rgba(169, 16, 121, 0.2) 0%, transparent 40%),
-                        radial-gradient(circle at 50% 50%, rgba(6, 40, 61, 0.2) 0%, transparent 50%);
+        /* CORE PREMIUM STYLES - NO EXTERNAL DEPENDENCIES */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #050505; 
+            color: #fff; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
         }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 32px;
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        
+        /* THE PURPLE-BLUE-PINK FLOW BACKGROUND */
+        .master-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+            background: radial-gradient(circle at 15% 20%, #2e0249 0%, transparent 40%),
+                        radial-gradient(circle at 85% 80%, #a91079 0%, transparent 40%),
+                        radial-gradient(circle at 50% 50%, #06283d 0%, #050505 100%);
         }
-        .glass-panel:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(169, 16, 121, 0.4);
-            transform: translateY(-10px);
+
+        /* NAVIGATION */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 25px 50px; position: sticky; top: 0; z-index: 100;
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .neon-text { background: linear-gradient(to right, #fff, #A91079, #2E0249); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .pink-btn { background: linear-gradient(45deg, #A91079, #2E0249); box-shadow: 0 10px 20px -10px #A91079; }
+        .logo { font-size: 28px; font-weight: 900; letter-spacing: -1.5px; background: linear-gradient(to right, #fff, #a91079); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* HERO SECTION */
+        .hero { height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .hero h1 { font-size: clamp(60px, 12vw, 150px); font-weight: 900; line-height: 0.8; letter-spacing: -5px; margin-bottom: 20px; }
+        .hero p { font-size: 14px; letter-spacing: 8px; color: #888; text-transform: uppercase; margin-bottom: 40px; }
+        
+        /* THE GLASS CARDS (PORTFOLIO/GIGS) */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; padding: 0 50px 100px; max-width: 1400px; margin: 0 auto; }
+        .card { 
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px; padding: 50px; backdrop-filter: blur(25px);
+            transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; overflow: hidden;
+        }
+        .card:hover { transform: translateY(-15px); border-color: #a91079; background: rgba(255, 255, 255, 0.06); }
+        .card h3 { font-size: 32px; margin-bottom: 15px; font-weight: 800; }
+        .card p { color: #aaa; line-height: 1.6; margin-bottom: 30px; font-size: 16px; }
+        
+        /* PREMIUM BUTTONS */
+        .btn-main { background: #fff; color: #000; padding: 18px 45px; border-radius: 100px; font-weight: 800; text-decoration: none; transition: 0.3s; border: none; cursor: pointer; font-size: 14px; text-transform: uppercase; }
+        .btn-main:hover { transform: scale(1.1); box-shadow: 0 10px 40px rgba(255, 255, 255, 0.2); }
+        .btn-order { background: linear-gradient(45deg, #a91079, #2e0249); color: #fff; border: none; padding: 12px 30px; border-radius: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 5px 20px rgba(169, 16, 121, 0.3); }
+
+        /* AUTH MODAL */
+        #auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .modal-content { background: #111; padding: 60px; border-radius: 40px; width: 450px; text-align: center; border: 1px solid #333; }
+        .input-group { width: 100%; padding: 18px; background: #1a1a1a; border: 1px solid #333; border-radius: 15px; color: #fff; margin-bottom: 15px; outline: none; }
+        .input-group:focus { border-color: #a91079; }
     </style>
 </head>
 <body>
-    <div class="mesh-gradient"></div>
+    <div class="master-bg"></div>
 
-    <!-- Navigation -->
-    <nav class="flex justify-between items-center px-8 py-6 sticky top-0 z-50 glass-panel m-4">
-        <div class="text-2xl font-extrabold tracking-tighter neon-text">DESTECH</div>
-        <div class="flex gap-8 items-center font-bold text-sm uppercase tracking-widest">
-            <a href="#services" class="hover:text-pink-500 transition">Gigs</a>
-            <a href="https://instagram.com" class="hover:text-pink-500 transition">Contact</a>
-            <button id="auth-nav-btn" class="px-8 py-3 bg-white text-black rounded-full hover:scale-110 transition">Login</button>
-        </div>
+    <nav>
+        <div class="logo">DESTECH</div>
+        <button class="btn-main" id="auth-nav-btn" onclick="toggleModal(true)" style="padding: 10px 25px; font-size: 12px;">LOGIN</button>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="h-screen flex flex-col items-center justify-center text-center px-6">
-        <h1 class="text-8xl md:text-[12rem] font-extrabold mb-4 tracking-tighter animate-pulse" id="hero-title">DESTECH</h1>
-        <p class="text-xl md:text-2xl text-gray-400 tracking-[0.6em] uppercase mb-12 opacity-0" id="hero-tag">Future-Proof Digital Solutions</p>
-        <div class="flex gap-6 opacity-0" id="hero-cta">
-            <a href="#services" class="px-12 py-5 pink-btn rounded-full font-bold text-lg">View Market</a>
+    <header class="hero">
+        <h1>DESTECH</h1>
+        <p>Future-Proof Digital Solutions</p>
+        <button class="btn-main" onclick="window.scrollTo({top: 800, behavior: 'smooth'})">Explore Market</button>
+    </header>
+
+    <section class="grid">
+        <!-- CATEGORY 1 -->
+        <div class="card" onclick="attemptOrder('Author Design')">
+            <div style="width: 40px; hieght: 4px; background: #a91079; margin-bottom: 20px; border-radius: 2px; height: 4px;"></div>
+            <h3>Author & Publishing</h3>
+            <p>We transform manuscripts into premium digital ecosystems. Elite branding for world-class storytellers.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 800; color: #a91079;">FROM ₦150,000</span>
+                <button class="btn-order">Order</button>
+            </div>
+        </div>
+
+        <!-- CATEGORY 2 -->
+        <div class="card" onclick="attemptOrder('Cybersecurity')">
+            <div style="width: 40px; hieght: 4px; background: #2e0249; margin-bottom: 20px; border-radius: 2px; height: 4px;"></div>
+            <h3>Cybersecurity Audit</h3>
+            <p>Bulletproof threat assessment and system hardening. Secure your digital assets with pro-level tech support.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 800; color: #2e0249;">FROM ₦50,000</span>
+                <button class="btn-order" style="background: #2e0249;">Secure</button>
+            </div>
         </div>
     </section>
 
-    <!-- Gigs Section (Publicly Accessible) -->
-    <section id="services" class="max-w-7xl mx-auto px-8 py-32">
-        <h2 class="text-6xl font-bold mb-20 tracking-tighter">Premium Offerings</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            
-            <!-- Gig Card -->
-            <div class="glass-panel p-12 flex flex-col justify-between gig-card h-full">
-                <div>
-                    <div class="w-12 h-1 bg-pink-500 mb-8"></div>
-                    <h3 class="text-3xl font-bold mb-6">Author & Publishing</h3>
-                    <p class="text-gray-400 leading-relaxed mb-10">We transform your manuscripts into digital ecosystems. Custom author platforms designed for impact.</p>
-                </div>
-                <div class="flex justify-between items-center pt-8 border-t border-white/10">
-                    <span class="text-sm font-bold text-pink-500">₦150k Starting</span>
-                    <button onclick="attemptOrder('Author & Publishing')" class="px-6 py-3 border border-pink-500/50 rounded-xl hover:bg-pink-600 transition">Order</button>
-                </div>
+    <!-- Modal System -->
+    <div id="auth-modal">
+        <div class="modal-content">
+            <h2 style="font-size: 32px; margin-bottom: 30px;">Enter System</h2>
+            <input type="email" id="email" placeholder="Your Email" class="input-group">
+            <input type="password" id="pass" placeholder="Password" class="input-group">
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button onclick="handleAuth('login')" class="btn-main" style="flex: 1;">LOGIN</button>
+                <button onclick="handleAuth('signup')" class="btn-main" style="flex: 1; background: transparent; color: #fff; border: 1px solid #fff;">SIGN UP</button>
             </div>
-
-            <!-- Gig Card -->
-            <div class="glass-panel p-12 flex flex-col justify-between gig-card h-full">
-                <div>
-                    <div class="w-12 h-1 bg-purple-500 mb-8"></div>
-                    <h3 class="text-3xl font-bold mb-6">Cybersecurity Audit</h3>
-                    <p class="text-gray-400 leading-relaxed mb-10">Secure your digital frontier. Professional penetration testing and threat protection systems.</p>
-                </div>
-                <div class="flex justify-between items-center pt-8 border-t border-white/10">
-                    <span class="text-sm font-bold text-purple-500">₦50k Starting</span>
-                    <button onclick="attemptOrder('Cybersecurity')" class="px-6 py-3 border border-purple-500/50 rounded-xl hover:bg-purple-600 transition">Order</button>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- Auth Modal -->
-    <div id="auth-modal" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-6">
-        <div class="glass-panel p-12 w-full max-w-md text-center border-pink-500/20">
-            <h2 class="text-4xl font-bold mb-8 tracking-tighter">Enter Destech</h2>
-            <input type="email" id="email" placeholder="Email" class="w-full p-4 bg-white/5 border border-white/10 rounded-2xl mb-4 outline-none focus:border-pink-500">
-            <input type="password" id="pass" placeholder="Password" class="w-full p-4 bg-white/5 border border-white/10 rounded-2xl mb-8 outline-none focus:border-pink-500">
-            <div class="flex gap-4">
-                <button onclick="handleAuth('login')" class="flex-1 py-4 bg-white text-black font-bold rounded-2xl">Login</button>
-                <button onclick="handleAuth('signup')" class="flex-1 py-4 border border-pink-500 rounded-2xl">Sign Up</button>
-            </div>
-            <button onclick="toggleModal(false)" class="mt-8 text-gray-500 underline text-sm">Dismiss</button>
+            <p onclick="toggleModal(false)" style="margin-top: 25px; color: #555; cursor: pointer; font-size: 14px;">Dismiss</p>
         </div>
     </div>
 
     <script>
-        function toggleModal(show) { document.getElementById('auth-modal').classList.toggle('hidden', !show); }
-        
-        // Advanced Animation Logic
-        gsap.registerPlugin(ScrollTrigger);
-        gsap.to("#hero-tag", { opacity: 1, duration: 1.5, delay: 0.5 });
-        gsap.to("#hero-cta", { opacity: 1, y: -20, duration: 1, delay: 1 });
-        
-        gsap.utils.toArray('.gig-card').forEach((card, i) => {
-            gsap.from(card, {
-                scrollTrigger: card,
-                opacity: 0,
-                y: 50,
-                duration: 1,
-                delay: i * 0.2
-            });
-        });
+        function toggleModal(show) { document.getElementById('auth-modal').style.display = show ? 'flex' : 'none'; }
     </script>
 </body>
 </html>
