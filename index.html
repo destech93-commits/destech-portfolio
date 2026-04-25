@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DESTECH | Future-Proof Digital Solutions</title>
     
-    <!-- Firebase Engine -->
     <script type="module">
         import { initializeApp } from "https://gstatic.com";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://gstatic.com";
@@ -40,63 +39,60 @@
 
         window.attemptOrder = (name) => {
             if (!userStatus) toggleModal(true);
-            else alert("Order Started: " + name);
+            else alert("Order Process Started: " + name + ". Proceeding to UBA Payment...");
         };
     </script>
 
     <style>
-        /* CORE PREMIUM STYLES - NO EXTERNAL DEPENDENCIES */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: #050505; 
-            color: #fff; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            overflow-x: hidden;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { background: #050505; color: #fff; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
         
-        /* THE PURPLE-BLUE-PINK FLOW BACKGROUND */
         .master-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
-            background: radial-gradient(circle at 15% 20%, #2e0249 0%, transparent 40%),
-                        radial-gradient(circle at 85% 80%, #a91079 0%, transparent 40%),
+            background: radial-gradient(circle at 10% 10%, #2e0249 0%, transparent 45%),
+                        radial-gradient(circle at 90% 90%, #a91079 0%, transparent 45%),
                         radial-gradient(circle at 50% 50%, #06283d 0%, #050505 100%);
         }
 
-        /* NAVIGATION */
         nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 25px 50px; position: sticky; top: 0; z-index: 100;
-            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px 6%; position: sticky; top: 0; z-index: 100;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .logo { font-size: 28px; font-weight: 900; letter-spacing: -1.5px; background: linear-gradient(to right, #fff, #a91079); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo { font-size: 26px; font-weight: 900; letter-spacing: -1px; background: linear-gradient(to right, #fff, #a91079); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* HERO SECTION */
-        .hero { height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .hero h1 { font-size: clamp(60px, 12vw, 150px); font-weight: 900; line-height: 0.8; letter-spacing: -5px; margin-bottom: 20px; }
-        .hero p { font-size: 14px; letter-spacing: 8px; color: #888; text-transform: uppercase; margin-bottom: 40px; }
+        .hero { height: 85vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 20px; }
+        .hero h1 { font-size: clamp(50px, 10vw, 130px); font-weight: 900; letter-spacing: -4px; margin-bottom: 15px; }
+        .hero p { font-size: 14px; letter-spacing: 10px; color: #888; text-transform: uppercase; margin-bottom: 50px; }
         
-        /* THE GLASS CARDS (PORTFOLIO/GIGS) */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; padding: 0 50px 100px; max-width: 1400px; margin: 0 auto; }
+        .services-header { text-align: center; padding: 100px 20px 40px; }
+        .search-bar { 
+            width: 100%; max-width: 600px; margin: 20px auto; 
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            padding: 18px 30px; border-radius: 100px; color: #fff; outline: none; transition: 0.3s;
+        }
+        .search-bar:focus { border-color: #a91079; box-shadow: 0 0 20px rgba(169,16,121,0.2); }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 30px; padding: 40px 6%; max-width: 1500px; margin: 0 auto; }
+        
         .card { 
-            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 40px; padding: 50px; backdrop-filter: blur(25px);
-            transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; overflow: hidden;
+            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 45px; padding: 50px; backdrop-filter: blur(30px);
+            transition: 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67); cursor: pointer;
         }
-        .card:hover { transform: translateY(-15px); border-color: #a91079; background: rgba(255, 255, 255, 0.06); }
-        .card h3 { font-size: 32px; margin-bottom: 15px; font-weight: 800; }
-        .card p { color: #aaa; line-height: 1.6; margin-bottom: 30px; font-size: 16px; }
+        .card:hover { transform: translateY(-15px); border-color: #a91079; background: rgba(169, 16, 121, 0.05); }
+        .card.featured { border: 1px solid rgba(169, 16, 121, 0.3); background: rgba(169, 16, 121, 0.03); }
+        .card h3 { font-size: 30px; margin-bottom: 15px; font-weight: 800; }
+        .card p { color: #999; line-height: 1.7; margin-bottom: 35px; }
         
-        /* PREMIUM BUTTONS */
-        .btn-main { background: #fff; color: #000; padding: 18px 45px; border-radius: 100px; font-weight: 800; text-decoration: none; transition: 0.3s; border: none; cursor: pointer; font-size: 14px; text-transform: uppercase; }
-        .btn-main:hover { transform: scale(1.1); box-shadow: 0 10px 40px rgba(255, 255, 255, 0.2); }
-        .btn-order { background: linear-gradient(45deg, #a91079, #2e0249); color: #fff; border: none; padding: 12px 30px; border-radius: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 5px 20px rgba(169, 16, 121, 0.3); }
+        .btn-main { background: #fff; color: #000; padding: 18px 45px; border-radius: 100px; font-weight: 800; border: none; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-main:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2); }
+        .btn-order { background: linear-gradient(45deg, #a91079, #2e0249); color: #fff; border: none; padding: 12px 35px; border-radius: 15px; font-weight: 700; cursor: pointer; }
 
-        /* AUTH MODAL */
-        #auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; align-items: center; justify-content: center; }
-        .modal-content { background: #111; padding: 60px; border-radius: 40px; width: 450px; text-align: center; border: 1px solid #333; }
-        .input-group { width: 100%; padding: 18px; background: #1a1a1a; border: 1px solid #333; border-radius: 15px; color: #fff; margin-bottom: 15px; outline: none; }
-        .input-group:focus { border-color: #a91079; }
+        #auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.97); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .modal-content { background: #0a0a0a; padding: 60px; border-radius: 40px; width: 450px; text-align: center; border: 1px solid #222; }
+        .input-group { width: 100%; padding: 18px; background: #151515; border: 1px solid #333; border-radius: 15px; color: #fff; margin-bottom: 15px; outline: none; }
     </style>
 </head>
 <body>
@@ -104,50 +100,68 @@
 
     <nav>
         <div class="logo">DESTECH</div>
-        <button class="btn-main" id="auth-nav-btn" onclick="toggleModal(true)" style="padding: 10px 25px; font-size: 12px;">LOGIN</button>
+        <div style="display: flex; gap: 30px; align-items: center;">
+            <a href="https://instagram.com" style="color: #888; text-decoration: none; font-size: 13px; font-weight: 700;">INSTAGRAM</a>
+            <button class="btn-main" id="auth-nav-btn" onclick="toggleModal(true)" style="padding: 10px 25px; font-size: 11px;">LOGIN</button>
+        </div>
     </nav>
 
     <header class="hero">
-        <h1>DESTECH</h1>
+        <h1 style="background: linear-gradient(to bottom, #fff, #555); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">DESTECH</h1>
         <p>Future-Proof Digital Solutions</p>
-        <button class="btn-main" onclick="window.scrollTo({top: 800, behavior: 'smooth'})">Explore Market</button>
+        <button class="btn-main" onclick="document.getElementById('market').scrollIntoView()">Enter Market</button>
     </header>
 
+    <div id="market" class="services-header">
+        <h2 style="font-size: 45px; font-weight: 900; letter-spacing: -2px;">The Marketplace</h2>
+        <input type="text" class="search-bar" placeholder="Search 1,000+ expert skills...">
+    </div>
+
     <section class="grid">
-        <!-- CATEGORY 1 -->
-        <div class="card" onclick="attemptOrder('Author Design')">
-            <div style="width: 40px; hieght: 4px; background: #a91079; margin-bottom: 20px; border-radius: 2px; height: 4px;"></div>
-            <h3>Author & Publishing</h3>
-            <p>We transform manuscripts into premium digital ecosystems. Elite branding for world-class storytellers.</p>
+        <!-- CATEGORY 1: WEBSITE DESIGN -->
+        <div class="card featured" onclick="attemptOrder('Website Design')">
+            <div style="width: 45px; height: 5px; background: #a91079; margin-bottom: 25px; border-radius: 10px;"></div>
+            <h3>Website Design</h3>
+            <p>High-end, animated UI/UX ecosystems. We build "Future-Proof" digital homes for elite brands and businesses.</p>
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: 800; color: #a91079;">FROM ₦150,000</span>
+                <span style="font-weight: 800; color: #a91079; font-size: 14px;">STARTING ₦150,000</span>
                 <button class="btn-order">Order</button>
             </div>
         </div>
 
-        <!-- CATEGORY 2 -->
-        <div class="card" onclick="attemptOrder('Cybersecurity')">
-            <div style="width: 40px; hieght: 4px; background: #2e0249; margin-bottom: 20px; border-radius: 2px; height: 4px;"></div>
-            <h3>Cybersecurity Audit</h3>
-            <p>Bulletproof threat assessment and system hardening. Secure your digital assets with pro-level tech support.</p>
+        <!-- CATEGORY 2: GRAPHICS DESIGN -->
+        <div class="card featured" onclick="attemptOrder('Graphics Design')">
+            <div style="width: 45px; height: 5px; background: #2e0249; margin-bottom: 25px; border-radius: 10px;"></div>
+            <h3>Graphics Design</h3>
+            <p>Visual storytelling that commands attention. Logos, brand identity, and premium marketing assets.</p>
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: 800; color: #2e0249;">FROM ₦50,000</span>
-                <button class="btn-order" style="background: #2e0249;">Secure</button>
+                <span style="font-weight: 800; color: #2e0249; font-size: 14px;">STARTING ₦50,000</span>
+                <button class="btn-order" style="background: #2e0249;">Order</button>
+            </div>
+        </div>
+
+        <!-- OTHER SKILLS -->
+        <div class="card" onclick="attemptOrder('Cybersecurity')">
+            <div style="width: 45px; height: 5px; background: #555; margin-bottom: 25px; border-radius: 10px;"></div>
+            <h3>Cyber & Tech</h3>
+            <p>Security audits and advanced tech support. Protecting your digital frontier with enterprise logic.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 800; color: #888; font-size: 14px;">STARTING ₦80,000</span>
+                <button class="btn-order" style="background: #333;">Secure</button>
             </div>
         </div>
     </section>
 
-    <!-- Modal System -->
     <div id="auth-modal">
         <div class="modal-content">
-            <h2 style="font-size: 32px; margin-bottom: 30px;">Enter System</h2>
+            <h2 style="font-size: 32px; font-weight: 900; margin-bottom: 30px;">Access System</h2>
             <input type="email" id="email" placeholder="Your Email" class="input-group">
             <input type="password" id="pass" placeholder="Password" class="input-group">
             <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <button onclick="handleAuth('login')" class="btn-main" style="flex: 1;">LOGIN</button>
-                <button onclick="handleAuth('signup')" class="btn-main" style="flex: 1; background: transparent; color: #fff; border: 1px solid #fff;">SIGN UP</button>
+                <button onclick="handleAuth('signup')" class="btn-main" style="flex: 1; background: transparent; color: #fff; border: 1px solid #444;">SIGN UP</button>
             </div>
-            <p onclick="toggleModal(false)" style="margin-top: 25px; color: #555; cursor: pointer; font-size: 14px;">Dismiss</p>
+            <p onclick="toggleModal(false)" style="margin-top: 25px; color: #555; cursor: pointer; font-size: 14px;">Close Terminal</p>
         </div>
     </div>
 
